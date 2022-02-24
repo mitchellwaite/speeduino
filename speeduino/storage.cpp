@@ -84,7 +84,11 @@ struct write_location {
 
   bool can_write() const
   {
-    return (counter<=EEPROM_MAX_WRITE_BLOCK);
+    bool canWrite = false;
+    if(currentStatus.RPM > 0) { canWrite = (counter <= EEPROM_MAX_WRITE_BLOCK); }
+    else { canWrite = (counter <= (EEPROM_MAX_WRITE_BLOCK * 8)); } //Write to EEPROM more aggresively if the engine is not running
+
+    return canWrite;
   }
 };
 
@@ -280,6 +284,8 @@ void writeConfig(uint8_t pageNum)
   }
 
   eepromWritesPending = !result.can_write();
+  if(eepromWritesPending == true) { BIT_SET(currentStatus.status4, BIT_STATUS4_BURNPENDING); }
+  else { BIT_CLEAR(currentStatus.status4, BIT_STATUS4_BURNPENDING); }
 }
 
 /** Reset all configPage* structs (2,4,6,9,10,13) and write them full of null-bytes.
