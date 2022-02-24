@@ -391,7 +391,7 @@
 #define ENGINE_PROTECT_BIT_OIL  2
 #define ENGINE_PROTECT_BIT_AFR  3
 #define ENGINE_PROTECT_BIT_COOLANT 4
-
+#define ENGINE_PROTECT_BIT_KILL_SWITCH 5
 
 #define CALIBRATION_TABLE_SIZE 512 ///< Calibration table size for CLT, IAT, O2
 #define CALIBRATION_TEMPERATURE_OFFSET 40 /**< All temperature measurements are stored offset by 40 degrees.
@@ -1161,7 +1161,9 @@ struct config9 {
   byte coolantProtEnbl : 1;
   byte coolantProtRPM[6];
   byte coolantProtTemp[6];
-  byte unused10_179;
+  byte killSwEnbl : 1;
+  byte killSwPin : 6;
+  byte killSwPolarity : 1;
   byte unused10_180;
   byte unused10_181;
   byte unused10_182;
@@ -1499,6 +1501,7 @@ extern byte pinMC33810_2_CS;
 #ifdef USE_SPI_EEPROM
   extern byte pinSPIFlash_CS;
 #endif
+extern byte pinKillSwitch;
 
 
 /* global variables */ // from speeduino.ino

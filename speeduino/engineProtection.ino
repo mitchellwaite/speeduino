@@ -10,6 +10,11 @@ byte checkEngineProtect()
     if( currentStatus.RPMdiv100 > configPage4.engineProtectMaxRPM ) { protectActive = 1; }
   }
 
+  if(checkKillSwitch())
+  {
+     protectActive = 1;
+  }
+
   return protectActive;
 }
 
@@ -111,6 +116,22 @@ byte checkCoolantTempLimit()
   }
 
   return coolantProtectActive;
+}
+
+byte checkKillSwitch()
+{
+   byte killSwitchProtectActive = 0;
+
+   if( configPage9.killSwEnbl == true )
+   {
+      if( digitalRead(pinKillSwitch) == configPage9.killSwPolarity )
+      {
+         BIT_SET(currentStatus.engineProtectStatus, ENGINE_PROTECT_BIT_KILL_SWITCH);
+         killSwitchProtectActive = 1;
+      }
+   }
+
+   return killSwitchProtectActive;
 }
 
 byte checkAFRLimit()

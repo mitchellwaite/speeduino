@@ -2571,6 +2571,9 @@ void setPinMapping(byte boardID)
     pinMode(pinResetControl, OUTPUT);
   }
 
+  // No default for kill switch
+  pinKillSwitch = pinTranslate(configPage9.killSwPin);
+
   //Finally, set the relevant pin modes for outputs
   pinMode(pinTachOut, OUTPUT);
   pinMode(pinIdle1, OUTPUT);
@@ -2765,7 +2768,12 @@ void setPinMapping(byte boardID)
       if (configPage10.wmiEmptyPolarity == 0) { pinMode(pinWMIEmpty, INPUT_PULLUP); } //Normal setting
       else { pinMode(pinWMIEmpty, INPUT); } //inverted setting
     }
-  }  
+  }
+  if( (configPage9.killSwEnbl > 0) && (!pinIsOutput(pinKillSwitch)) )
+  {
+    if (configPage9.killSwPolarity == 0) { pinMode(pinKillSwitch, INPUT_PULLUP); } //Normal setting- kill switch is active low w/ pullup
+    else { pinMode(pinKillSwitch, INPUT); } //kill switch is active high, no pullup
+  }
 
   //These must come after the above pinMode statements
   triggerPri_pin_port = portInputRegister(digitalPinToPort(pinTrigger));

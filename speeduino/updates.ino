@@ -588,6 +588,7 @@ void doUpdates()
   {
     //202204
     configPage9.coolantProtEnbl = false;
+    configPage9.killSwEnbl = false;
     
     writeAllConfig();
     storeEEPROMVersion(20);
